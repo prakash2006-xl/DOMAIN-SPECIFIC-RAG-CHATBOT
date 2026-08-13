@@ -1,12 +1,14 @@
 import streamlit as st
 import os
 import shutil
-import certifi
 from dotenv import load_dotenv
 
 # Fix for SSL certificate path issue [Errno 2] No such file or directory
-os.environ["SSL_CERT_FILE"] = certifi.where()
-os.environ["REQUESTS_CA_BUNDLE"] = certifi.where()
+# We downloaded a clean cacert.pem and force httpx to use it exclusively.
+cert_path = os.path.join(os.path.dirname(__file__), "cacert.pem")
+os.environ["SSL_CERT_FILE"] = cert_path
+os.environ["REQUESTS_CA_BUNDLE"] = cert_path
+os.environ.pop("SSL_CERT_DIR", None)
 
 # Load environment variables (override to ensure it catches latest changes to .env)
 load_dotenv(override=True)
