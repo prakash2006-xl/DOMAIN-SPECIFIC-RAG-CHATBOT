@@ -1,6 +1,7 @@
 from langchain_groq import ChatGroq
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
+from operator import itemgetter
 from prompt import rag_prompt
 
 def format_docs(docs):
@@ -29,7 +30,11 @@ def get_rag_chain(retriever, api_key):
     
     # Build the chain
     rag_chain = (
-        {"context": retriever | format_docs, "question": RunnablePassthrough()}
+        {
+            "context": itemgetter("question") | retriever | format_docs, 
+            "question": itemgetter("question"),
+            "chat_history": itemgetter("chat_history")
+        }
         | rag_prompt
         | llm
         | StrOutputParser()
@@ -37,9 +42,9 @@ def get_rag_chain(retriever, api_key):
     
     return rag_chain
 
-def retrieve_and_answer(question, vector_store, api_key):
+def retrieve_and_answer(question, chat_history, vector_store, api_key):
     """
-    Given a question and vector store, retrieve relevant chunks and generate answer.
+    Given a question, chat history, and vector store, retrieve relevant chunks and generate answer.
     Returns the answer and the source documents used.
     """
     # Retrieve top 3-5 relevant chunks (k=4)
@@ -49,7 +54,7 @@ def retrieve_and_answer(question, vector_store, api_key):
     chain = get_rag_chain(retriever, api_key)
     
     # Invoke the chain
-    answer = chain.invoke(question)
+    answer = chain.invoke({"question": question, "chat_history": chat_history})
     
     # Fetch the documents directly to return them for source display
     source_docs = retriever.invoke(question)

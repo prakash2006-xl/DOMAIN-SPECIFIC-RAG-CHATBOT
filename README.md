@@ -115,6 +115,14 @@ streamlit run app.py
 ```
 This will open the web application in your default browser.
 
+## 13b. How to Run with Docker
+Alternatively, you can run the application fully containerized using Docker:
+```bash
+docker build -t domain-rag-chatbot .
+docker run -p 8501:8501 domain-rag-chatbot
+```
+Then navigate to `http://localhost:8501` in your browser.
+
 ## 14. How to Upload PDFs
 1. Look at the left sidebar titled "Document Manager".
 2. Click on "Browse files" or drag and drop your PDF files into the uploader.
@@ -145,11 +153,9 @@ A test sheet is provided in `tests/test_questions.csv`. To evaluate the system:
 
 ## 18. Limitations
 - OCR is not implemented; it cannot read scanned image-based PDFs.
-- Chat memory is limited; follow-up questions might lose deep context.
 - Very large documents (thousands of pages) might take longer to embed on standard CPUs.
 
 ## 19. Future Enhancements
-- Implement conversational memory for follow-up questions.
 - Add OCR support for scanned documents using Tesseract.
 - Implement user authentication and document access control.
 

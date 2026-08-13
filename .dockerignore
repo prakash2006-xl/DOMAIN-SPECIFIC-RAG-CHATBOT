@@ -1,0 +1,12 @@
+.env
+.venv
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+.git/
+.gitignore
+documents/
+vector_store/
+tests/

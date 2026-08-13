@@ -1,7 +1,12 @@
 import streamlit as st
 import os
 import shutil
+import certifi
 from dotenv import load_dotenv
+
+# Fix for SSL certificate path issue [Errno 2] No such file or directory
+os.environ["SSL_CERT_FILE"] = certifi.where()
+os.environ["REQUESTS_CA_BUNDLE"] = certifi.where()
 
 # Load environment variables (override to ensure it catches latest changes to .env)
 load_dotenv(override=True)
@@ -128,6 +133,8 @@ def main():
                     for i, source in enumerate(message["sources"]):
                         st.markdown(f"**{i+1}. {source.metadata.get('source', 'Unknown')}** — Page {source.metadata.get('page', 'Unknown')}")
                         st.caption(f'"{source.page_content[:200]}..."')
+            if message["role"] == "assistant":
+                st.feedback("thumbs", key=f"hist_fb_{st.session_state.messages.index(message)}")
 
     # Chat Input
     if question := st.chat_input("Ask a question about your documents..."):
@@ -151,12 +158,18 @@ def main():
                 st.warning("Please upload and process documents before asking questions.")
                 return
 
+        # Format chat history
+        chat_history = ""
+        for msg in st.session_state.messages[:-1]:  # Exclude current question
+            chat_history += f"{msg['role'].capitalize()}: {msg['content']}\n"
+            
         # Generate response
         with st.chat_message("assistant"):
             with st.spinner("Searching for answers..."):
                 try:
                     answer, source_docs = retrieve_and_answer(
                         question=question,
+                        chat_history=chat_history,
                         vector_store=st.session_state.vector_store,
                         api_key=api_key
                     )
@@ -176,8 +189,12 @@ def main():
                         "content": answer,
                         "sources": source_docs if "I could not find this information" not in answer else []
                     })
+                    
+                    st.feedback("thumbs", key=f"curr_fb_{len(st.session_state.messages)}")
                 except Exception as e:
+                    import traceback
                     st.error(f"An error occurred while generating the answer: {e}")
+                    st.error(traceback.format_exc())
 
 if __name__ == "__main__":
     main()
