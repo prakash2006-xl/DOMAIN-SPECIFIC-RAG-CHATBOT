@@ -51,6 +51,13 @@ def process_documents(uploaded_files):
         st.warning("Please upload PDF documents first.")
         return
         
+    # Check file sizes
+    MAX_FILE_SIZE_MB = 10
+    for file in uploaded_files:
+        if file.size > MAX_FILE_SIZE_MB * 1024 * 1024:
+            st.error(f"File {file.name} exceeds the {MAX_FILE_SIZE_MB}MB size limit. Please upload smaller files.")
+            return
+        
     with st.spinner("Processing documents... This may take a moment."):
         saved_paths = save_uploaded_files(uploaded_files)
         if not saved_paths:
@@ -76,6 +83,8 @@ def process_documents(uploaded_files):
 def main():
     st.header("Domain-Specific RAG Chatbot")
     st.subheader("Ask questions from your uploaded PDF documents")
+    st.info("⚠️ **Disclaimer:** AI-generated answers may not always be automatically correct. Please verify high-stakes information independently.")
+
 
     # Initialize session state for chat history and vector store
     if "messages" not in st.session_state:
@@ -87,9 +96,10 @@ def main():
     # --- SIDEBAR ---
     with st.sidebar:
         st.title("Document Manager")
+        st.warning("🔒 Do not upload confidential documents without permission.")
         uploaded_files = st.file_uploader(
-            "Upload your PDF documents", 
-            type="pdf", 
+            "Upload your PDF documents (Max 10MB per file)", 
+            type=["pdf"], 
             accept_multiple_files=True
         )
         
