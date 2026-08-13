@@ -1,0 +1,16 @@
+question,expected_source,expected_page,answer_available,expected_behavior
+"What is the leave policy?",Policy.pdf,6,yes,Retrieve page 6 and answer correctly
+"How is attendance calculated?",Handbook.pdf,11,yes,Retrieve page 11 and answer correctly
+"Who is the company CEO?",Not available,Not available,no,Refuse to invent an answer
+"What are the graduation requirements?",Handbook.pdf,20,yes,Retrieve page 20 and answer correctly
+"What are the office hours?",Policy.pdf,2,yes,Retrieve page 2 and answer correctly
+"Explain the disciplinary procedure.",Handbook.pdf,15,yes,Retrieve page 15 and answer correctly
+"What is the capital of France?",Not available,Not available,no,Refuse to answer since it's unrelated
+"Can I bring pets to work?",Policy.pdf,12,yes,Retrieve page 12 and answer correctly
+"What is the dress code?",Handbook.pdf,8,yes,Retrieve page 8 and answer correctly
+"Who won the world cup in 2022?",Not available,Not available,no,Refuse to answer
+"What is the remote work policy?",Policy.pdf,4,yes,Retrieve page 4 and answer correctly
+"How do I apply for sick leave?",Policy.pdf,6,yes,Retrieve page 6 and answer correctly
+"What is the procedure for appealing a grade?",Handbook.pdf,18,yes,Retrieve page 18 and answer correctly
+"What is the meaning of life?",Not available,Not available,no,Refuse to answer
+"How do I reset my portal password?",Handbook.pdf,22,yes,Retrieve page 22 and answer correctly
